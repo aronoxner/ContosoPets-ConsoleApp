@@ -1,4 +1,6 @@
 // the ourAnimals array will store the following: 
+using System.Reflection.Metadata.Ecma335;
+
 string animalSpecies = "";
 string animalID = "";
 string animalAge = "";
@@ -282,7 +284,109 @@ do
 
         case "3":
             // Ensure anaimal ages and physcial descriptions are complete
-            Console.WriteLine("Challenge Projec t - please check back to see progress");
+            string updatePet = "y";
+            int needUpdateCount = 0;
+            
+
+            // Gets a count of how many pets have ages or physical descriptions without valid entries.
+            for( int i = 0; i < maxPets; i++)
+            {
+                if (ourAnimals[i,0] != "ID #: " && (ourAnimals[i,2] =="Age: ?" || ourAnimals[i, 4] == "Physical description: tbd"))
+                {
+                    needUpdateCount+=1;
+                }
+            }
+            Console.WriteLine($"We currently have {needUpdateCount} pets that have ages or physical descriptions that need updating.");
+
+            // begins while loop with the count and y as conditions
+            while(updatePet == "y" && needUpdateCount > 0)
+            {
+                bool validUpdate = false;
+                // bool variable to only change the count once even if needing to update both age and physical description. It is possible an entry has an age but no description and vice versa.
+                bool changedValue = false;
+
+                // for loop to go through entries until one mising the specific data
+                for (int i = 0; i < maxPets; i++)
+                {
+                    // checks age first
+                    if (ourAnimals[i,0] !="ID #: " && (ourAnimals[i,2]=="Age: ?"))
+                    {
+                        do
+                        {
+                            int petAge;
+                            Console.WriteLine($"\n\nEnter an age for ID #: {ourAnimals[i, 0]}");
+                            readResult = Console.ReadLine();
+
+                            if(readResult != null)
+                            {
+                                animalAge = readResult;
+                                validUpdate = int.TryParse(animalAge, out petAge);
+                            }
+                        } while (validUpdate==false);
+
+                        // update value in the array
+                        ourAnimals[i, 2] = "Age: " + animalAge;
+                        Console.WriteLine($"\n\nPet {ourAnimals[i,0]} has been updated with the age {animalAge}.");
+                        
+                        // subtracts update count to track if there are more pets that need updates
+                        needUpdateCount--;
+                        
+                        // changes bool value so even if we change both items it will only subract the counter once. If age is filled in but description is not then it will subract in the description if statement.
+                        changedValue = true;
+                    }
+
+                    // checks physical description
+                    if (ourAnimals[i,0] != "ID #: " && (ourAnimals[i,4] =="Physical description: tbd" || ourAnimals[i,4] == "Physical description: "))
+                    {
+                        do
+                        {
+                            Console.WriteLine($"\n\nEnter a physical description for ID #:{ourAnimals[i, 0]} (size, color, breed, gender, weight, housebroken)");
+                            readResult= Console.ReadLine();
+
+                            // added condition of length being more than 0 char
+                            if(readResult != null && readResult.Length > 0)
+                            {
+                                animalPhysicalDescription = readResult.ToLower();
+                            }
+                        } while (animalPhysicalDescription == "tbd");
+
+                        // update array
+                        ourAnimals[i, 4] = "Physical description: " + animalPhysicalDescription;
+                        Console.WriteLine($"\n\nPet {ourAnimals[i,0]} has been updated with the description {animalPhysicalDescription}");
+                        // checks bool in order to subtract coutner
+                        needUpdateCount = (changedValue == false) ? needUpdateCount-- : needUpdateCount;
+                        /*if (changedValue == false)
+                        {
+                            needUpdateCount--;
+                        }*/
+                    }
+                    // conditions for asking if they want to update another pet, to continue the statement, or break the statement because no more pets are left that need updating.
+                    if (needUpdateCount > 0 && changedValue == true)
+                    {
+                        Console.WriteLine("Do you want to update another pet? (y/n)");
+
+                        do
+                        {
+                            readResult = Console.ReadLine();
+                            if (readResult != null)
+                            {
+                                updatePet = readResult.ToLower();
+                            }
+
+                        } while (updatePet != "y" && updatePet != "n");
+                    }
+                    else if (needUpdateCount > 0 && changedValue == false)
+                    {
+                        continue;
+                    }
+                    else if (needUpdateCount == 0) break;
+                }
+                
+            }
+            if ( needUpdateCount == 0)
+                {
+                    Console.WriteLine("All age and physical descriptions have been successfully updated! We have no more pets that need upating, please check back later.");
+                }
             Console.WriteLine("Press the Enter key to continue");
             readResult = Console.ReadLine();
             break;
