@@ -1,4 +1,3 @@
-# PetTrackerApplication
 # ContosoPets-ConsoleApp
 
 ContosoPets-ConsoleApp is a console-based pet tracking application for a pet store. It allows users to manage and view information about pets available for adoption.
